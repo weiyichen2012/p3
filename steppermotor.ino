@@ -47,11 +47,8 @@ void steppermotor_right_rotate(int to_angle)
             if((micros() - time) >= 150)
             {
                 digitalWrite(pul_r_r, i%2);
-                if( i%2 == 0)
-                {
-                    current_right_ange = current_right_ange + 360/1600;
-                }
-                i = i + 1;
+                current_right_ange = current_right_ange + (i%2 == 1)*0.225;
+                i += 1;
                 time = micros();
             } 
         }
@@ -62,11 +59,8 @@ void steppermotor_right_rotate(int to_angle)
             if((micros() - time) >= 150)
             {
                 digitalWrite(pul_r_r, i%2);
-                if( i%2 == 0)
-                {
-                    current_right_ange = current_right_ange - 360/1600;
-                }
-                i = i + 1;
+                current_right_ange = current_right_ange - (i%2 == 1)*0.225;
+                i += 1;
                 time = micros();
             } 
         }
@@ -84,13 +78,13 @@ void loop()
     //收到pi传来的信息（第一位2指右臂，第二位1指旋转，第三位90指旋转移动到的位置)
     piinf.part = 2;
     piinf.movement = 1;
-    piinf.position = 90;
+    piinf.position = 5*700;
 
     if(piinf.part == 2)
     {
         if(piinf.movement == 1)
         {
-            steppermotor_right_rotate(piinf.position);
+            steppermotor_right_rotate(piinf.position);//from 0 to 25*700 (700 steps per cm),一般不输入负数，负数用于测试后的归正
         }
     }
 }
